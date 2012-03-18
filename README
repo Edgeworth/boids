@@ -1,0 +1,12 @@
+This is an implementation of a boids flocking algorithm in OpenCL. 
+
+
+Required programs and libraries:
+cmake
+libSFML
+OpenCL
+
+run build.py
+
+Execution:
+./main (window width) (window height) (view width) (view height) (number of boids)
