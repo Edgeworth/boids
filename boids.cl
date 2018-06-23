@@ -9,11 +9,11 @@ typedef struct {
 } Boid __attribute((aligned(32)));
 
 int2 qtize(float2 v, float2 low) {
-	return convert_int2((v-low)/SEE);
+	return convert_int2((v-low)/convert_float2(SEE));
 }
 
-__kernel void move(__global Boid* in, __global Boid* out,
-	__global int* bt, float time, float2 low, float2 high) {
+void kernel move(global Boid* in, global Boid* out,
+	global int* bt, float time, float2 low, float2 high) {
 	int xid = get_global_id(0);
 
 	int nClose = 0;
@@ -36,7 +36,7 @@ __kernel void move(__global Boid* in, __global Boid* out,
 					avgv += in[cur].v;
 					if (dist < min && dist <= SEP) {
 						min = dist;
-						sep = (in[xid].p - in[cur].p)*pown(SEP/dist, 2);
+						sep = (in[xid].p - in[cur].p)*convert_float2(pown(SEP/dist, 2));
 					}
 				}
 			}
@@ -50,10 +50,13 @@ __kernel void move(__global Boid* in, __global Boid* out,
 	if (nClose > 0) {
 		avgp /= nClose;
 		avgv /= nClose;
-		out[xid].a = sep*SEP_F + (avgv-in[xid].v)*STEER_F + (avgp-in[xid].p)*ATTRACT_F + in[xid].v*SPEED_F;
+		out[xid].a = sep*convert_float2(SEP_F) + 
+			(avgv-in[xid].v)*convert_float2(STEER_F) + 
+			(avgp-in[xid].p)*convert_float2(ATTRACT_F) + 
+			in[xid].v*convert_float2(SPEED_F);
 	}
 
-	out[xid].p += 0.5*out[xid].a*time*time + out[xid].v*time;
+	out[xid].p += convert_float2(0.5*time*time)*out[xid].a + out[xid].v*convert_float2(time);
 
 	float2 range = high-low;
 	out[xid].p -= range*floor((out[xid].p-low)/range);
@@ -62,5 +65,5 @@ __kernel void move(__global Boid* in, __global Boid* out,
 
 	out[xid].v += out[xid].a*time;
 	float len = length(out[xid].v);
-	if (len > MAX_SPEED) out[xid].v *= MAX_SPEED/len;
+	if (len > MAX_SPEED) out[xid].v *= convert_float2(MAX_SPEED/len);
 }

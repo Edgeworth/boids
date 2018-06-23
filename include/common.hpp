@@ -8,6 +8,7 @@
 #include <cassert>
 #include <SFML/Graphics.hpp>
 #include <CL/cl.hpp>
+#include <GL/gl.h>
 #include "vec.hpp"
 
 #endif

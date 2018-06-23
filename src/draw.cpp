@@ -31,5 +31,5 @@ void draw(sf::RenderWindow& win) {
 		}
 	}
 
-	win.Display();
+	win.display();
 }
