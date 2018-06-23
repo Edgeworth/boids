@@ -26,7 +26,7 @@ struct Vec {
 
 	Vec& operator*=(const float& f) {x *= f; y *= f; return *this;}
 	Vec& operator/=(const float& f) {assert(f!=0.0); x /= f; y /= f; return *this;}
-};
+} CL_ALIGNED(8);
 
 inline Vec operator*(const float& f, const Vec& v) {return Vec(f*v.x, f*v.y);}
 

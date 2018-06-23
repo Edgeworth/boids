@@ -17,8 +17,8 @@ int main(int argc, char *argv[]) {
 	high.x = atoi(argv[3]); high.y = atoi(argv[4]);
 
 	sf::RenderWindow win(sf::VideoMode(winx, winy), "Boids",
-		sf::Style::Resize|sf::Style::Close, sf::WindowSettings(24, 8, 16));
-	win.UseVerticalSync(true);
+		sf::Style::Resize|sf::Style::Close, sf::ContextSettings(24, 8, 16));
+	win.setVerticalSyncEnabled(true);
 	glViewport(0, 0, winx, winy);
 	glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -38,14 +38,13 @@ int main(int argc, char *argv[]) {
 	oclInit();
 
 	sf::Clock clock;
-	while (win.IsOpened()) {
+	while (win.isOpen()) {
 		sf::Event event;
-		while (win.GetEvent(event))
-			if (event.Type == sf::Event::Closed)
-				win.Close();
-
-		moveBoids(clock.GetElapsedTime());
-		clock.Reset();
+		while (win.pollEvent(event))
+			if (event.type == sf::Event::Closed)
+				win.close();
+		moveBoids(clock.getElapsedTime().asSeconds());
+		clock.restart();
 
 		draw(win);
 	}
